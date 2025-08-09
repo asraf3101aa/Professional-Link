@@ -16,10 +16,10 @@ class LoginView(APIView):
     def post(self, request):
         try:
             serializer = LoginSerializer(data=request.data)
-            if not serializer.is_valid:
+            if not serializer.is_valid():
                 return CustomResponse(
                     data=serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
+                    status_code=status.HTTP_400_BAD_REQUEST
                 )
             
             user = serializer.validated_data.get('user')
@@ -29,7 +29,7 @@ class LoginView(APIView):
                 'access_token': str(auth_tokens.access_token),
                 'refresh_token': str(auth_tokens)
             }
-            return CustomResponse(data=data, status=status.HTTP_200_OK)
+            return CustomResponse(data=data, status_code=status.HTTP_200_OK)
         
         except Exception as e:
             return CustomResponse(
@@ -39,19 +39,21 @@ class LoginView(APIView):
 
 
 class UserViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
     def create(self, request):
         try:
             serializer = UserSerializer(data=request.data)
             if not serializer.is_valid():
                 return CustomResponse(
                     data=serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
+                    status_code=status.HTTP_400_BAD_REQUEST
                 )
 
             serializer.save()
             return CustomResponse(
                 data=serializer.data,
-                status=status.HTTP_201_CREATED
+                status_code=status.HTTP_201_CREATED
             )
 
         except Exception as e:

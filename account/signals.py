@@ -3,6 +3,8 @@ from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from connection.models import ConnectionRequest
+from notification.models import InAppNotification
 
 
 User = get_user_model()
@@ -18,18 +20,17 @@ def add_user_to_content_creator_group(sender, instance, created, **kwargs):
 def setup_content_creator_group_permissions(sender, instance, created, **kwargs):
     if created and instance.name == 'end user':
         # Thread permissions
-        thread_content_type = ContentType.objects.get_for_model(Thread)
-        thread_permissions = Permission.objects.filter(
-            content_type=thread_content_type,
+        connection_request_content_type = ContentType.objects.get_for_model(ConnectionRequest)
+        connection_request_permissions = Permission.objects.filter(
+            content_type=connection_request_content_type,
             codename__in=[
-                'add_thread',
-                'change_thread', 
-                'delete_thread',
-                'view_thread'
+                'add_connectionrequest',
+                'change_connectionrequest', 
+                'delete_connectionrequest',
+                'view_connectionrequest'
             ]
         )
         
-        # User permissions (excluding add_user for creation)
         user_content_type = ContentType.objects.get_for_model(User)
         user_permissions = Permission.objects.filter(
             content_type=user_content_type,
@@ -37,29 +38,6 @@ def setup_content_creator_group_permissions(sender, instance, created, **kwargs)
                 'change_user',
                 'delete_user',
                 'view_user'
-            ]
-        )
-
-        # Comment permissions
-        comment_content_type = ContentType.objects.get_for_model(Comment)
-        comment_permissions = Permission.objects.filter(
-            content_type=comment_content_type,
-            codename__in=[
-                'add_comment',
-                'change_comment',
-                'delete_comment',
-                'view_comment'
-            ]
-        )
-
-        # Notification preference permissions
-        notification_preference_ct = ContentType.objects.get_for_model(NotificationChannelPreference)
-        notification_preference_permissions = Permission.objects.filter(
-            content_type=notification_preference_ct,
-            codename__in=[
-                'change_notificationchannelpreference',
-                'add_notificationchannelpreference',
-                'view_notificationchannelpreference',
             ]
         )
 
@@ -73,6 +51,6 @@ def setup_content_creator_group_permissions(sender, instance, created, **kwargs)
         )
 
         # Combine all permissions
-        all_permissions = list(thread_permissions) + list(user_permissions) + list(comment_permissions) + list(notification_preference_permissions) + list(in_app_notification_permissions)
+        all_permissions = list(user_permissions) + list(connection_request_permissions) + list(in_app_notification_permissions)
         if all_permissions:
             instance.permissions.set(all_permissions)

@@ -9,7 +9,6 @@ class User(AbstractUser):
     """
     Custom user model extending Django's AbstractUser,
     """
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = None
     last_name = None
     full_name = models.CharField(_('full name'), max_length=50)

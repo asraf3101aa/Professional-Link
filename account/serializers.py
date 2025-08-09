@@ -5,7 +5,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 
 
 class UserSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField(read_only=True)
+    id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True, min_length=8)
