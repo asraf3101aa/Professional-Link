@@ -23,7 +23,6 @@ class ConnectionRequest(models.Model):
         default=RequestStatus.PENDING
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('sender', 'receiver')
