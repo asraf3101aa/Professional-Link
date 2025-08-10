@@ -17,6 +17,7 @@ class CustomResponse(Response):
                         "description": str(data) if isinstance(data, Exception) else data
                     }
                 }
+                
             elif status_code == status.HTTP_400_BAD_REQUEST:
                 response = {
                     "error": {
@@ -25,6 +26,23 @@ class CustomResponse(Response):
                         "fields": data if isinstance(data, dict) else None
                     }
                 }
+
+            elif status_code == status.HTTP_403_FORBIDDEN:
+                response = {
+                    "error": {
+                        "message": "Permission denied.",
+                        "description": str(data) if isinstance(data, str) else "You do not have permission to perform this action."
+                    }
+                }
+
+            elif status_code == status.HTTP_404_NOT_FOUND:
+                response = {
+                    "error": {
+                        "message": "Resource not found.",
+                        "description": str(data) if isinstance(data, str) else "The requested resource could not be found."
+                    }
+                }
+
             else:
                 response = {
                     "data": data

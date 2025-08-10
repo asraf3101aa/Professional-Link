@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ni(wnesp#%*ncq70i)*d+#)adg6dntg%dc=1r*=vfqmtpt_rhy'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('APP_ENVIRONMENT','development').lower() != 'production'
 
 ALLOWED_HOSTS = []
 
@@ -161,3 +161,24 @@ SIMPLE_JWT = {
         days=int(os.environ.get('REFRESH_TOKEN_LIFETIME_DAYS', 7))
     ),
 }
+
+#Celery broker
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+         "level": "DEBUG", 
+    },
+}
+
+# Email setting
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+DEFAULT_EMAIL_SENDER=os.getenv('DEFAULT_EMAIL_SENDER', 'professionallink@gmail.com')

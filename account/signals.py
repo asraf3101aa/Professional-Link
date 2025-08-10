@@ -35,8 +35,6 @@ def setup_content_creator_group_permissions(sender, instance, created, **kwargs)
         user_permissions = Permission.objects.filter(
             content_type=user_content_type,
             codename__in=[
-                'change_user',
-                'delete_user',
                 'view_user'
             ]
         )
